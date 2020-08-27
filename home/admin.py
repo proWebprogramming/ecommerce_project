@@ -9,4 +9,4 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_filter = ['subject']
 
 admin.site.register(Setting, SettingAdmin)
-admin.site.register(ContactMessage)
+admin.site.register(ContactMessage, ContactMessageAdmin)
