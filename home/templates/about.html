@@ -1,0 +1,23 @@
+{% extends 'homebase.html' %}
+{% block title %} About Us-{{ setting.title }}{% endblock %}
+{% block keywords %} {{ setting.keywords }}{% endblock %}
+{% block description %} {{ setting.description }}{% endblock %}
+{% block sidebar %} {% include 'sidebar.html' %}{% endblock %}
+
+{% block body %}
+    <div class="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                    <li><a href="active">About Us</a></li>
+
+            </ul>
+        </div>
+     </div>
+    <div id="section">
+    <div class="row">
+    {{ setting.aboutus|safe }}
+         </div>
+     </div>
+{% endblock %}
+{% block footer%} {% include 'footer.html' %}{% endblock %}
