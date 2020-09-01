@@ -7,9 +7,10 @@ from home import views
 
 urlpatterns = [
     path('about/', views.aboutus, name='aboutus'),
-    path('contact/', views.contactus, name='cantactus'),
+    path('contact/', views.contactus, name='contactus'),
     path('', include('home.urls')),
     path('product/', include('product.urls')),
+    path('category/<int:id>/<slug:slug>',views.category_product, name='category_product'),
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]

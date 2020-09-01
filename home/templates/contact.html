@@ -41,7 +41,7 @@
                              <form id="checkout-form" class="clearfix" method="post">
                                  {% csrf_token %}
                                  {{ form.as_p }}
-							<input type="submit" value="SEND FORM">
+							 <input type="submit" value="SEND FORM">
                              </form>
 						</div>
 
@@ -53,7 +53,7 @@
 								<h4 class="title">Contact Information</h4>
 							</div>
 							<div>
-								{{ setting.contact|safe }}
+								{{ setting.contacts|safe }}
 							</div>
 
 						</div>

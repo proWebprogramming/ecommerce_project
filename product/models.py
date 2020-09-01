@@ -5,13 +5,15 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
-class Category(models.Model):
+class Category(MPTTModel):
     STATUS = (
         ('True', 'Mavjud'),
         ('False', 'Mavjud Emas'),
     )
-    parent = models.ForeignKey('self',
+    parent = TreeForeignKey('self',
                                blank=True,
                                null=True,
                                related_name='children',
@@ -27,8 +29,18 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+    class MPTTMeta:
+        order_insertion_by = ['title']
 
-
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'self': self.slug})
+    def __str__(self):
+        full_path = [self.title]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.title)
+            k = k.parent
+        return '/'.join(full_path[::-1])
 
 class Product(models.Model):
     STATUS = (
@@ -38,14 +50,14 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, unique=True)
     keywords = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank=True, max_length=255)
+    description = models.TextField(blank=True)
     image = models.ImageField(blank=True, upload_to='images/')
     price = models.FloatField()
     amount = models.IntegerField()
     minamount = models.IntegerField()
     detail = RichTextUploadingField()
-    status = models.CharField(max_length=15, choices=STATUS, default='True')
-    slug = models.SlugField(null=False)
+    status = models.CharField(max_length=15, choices=STATUS)
+    slug = models.SlugField(null=False, unique=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
@@ -57,6 +69,8 @@ class Product(models.Model):
 
     image_tag.short_description = 'Image'
 
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'self': self.slug})
 
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
