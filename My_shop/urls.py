@@ -10,6 +10,8 @@ urlpatterns = [
     path('contact/', views.contactus, name='contactus'),
     path('', include('home.urls')),
     path('product/', include('product.urls')),
+
+    path('product/<int:id>/<slug:slug>', views.product_detail, name='product_detail'),
     path('category/<int:id>/<slug:slug>',views.category_product, name='category_product'),
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
