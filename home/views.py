@@ -1,8 +1,11 @@
+import json
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, HttpResponse
 
 # Create your views here.
+from home.forms import SearchForm
 from home.models import Setting, ContactForm, ContactMessage
 from product.models import Category, Product, Images, Comment
 
@@ -26,7 +29,7 @@ def index(request):
 
 
 def aboutus(request):
-    setting = Setting.objects.get(pk=1)
+    setting = Setting.objects.all()
     context = {'setting': setting,}
     return render(request, 'about.html', context)
 
@@ -44,7 +47,7 @@ def contactus(request):
             data.save()
             messages.success(request, "Sizning xabaringiz yuborildi! Rahmat")
             return HttpResponseRedirect('/contact')
-    setting = Setting.objects.get(pk=1)
+    setting = Setting.objects.all()
     form = ContactForm
     context = {'setting': setting,
                'form': form,}
@@ -54,7 +57,7 @@ def contactus(request):
 def category_product(request,id, slug):
     category = Category.objects.all()
     catdata = Category.objects.get(pk=1)
-    products= Product.objects.filter(category_id=id)
+    products = Product.objects.filter(category_id=id)
     context = {
         'category': category,
         'catdata': catdata,
@@ -74,3 +77,40 @@ def product_detail(request, id, slug):
         'comments': comments,
     }
     return render(request, 'product_detail.html', context)
+
+
+def search(request):
+    if request.method=='POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            catid = form.cleaned_data['catid']
+            if catid == 0:
+                products = Product.objects.filter(title__icontains=query)
+            else:
+                products = Product.objects.filter(title__icontains=query, category_id=catid)
+
+            category = Category.objects.all()
+            context = {
+                'products': products,
+                'query': query,
+                'category': category,
+            }
+            return render(request, 'search.html', context)
+    return HttpResponseRedirect('/')
+
+
+def search_auto(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        products = Product.objects.filter(title__icontains=q)
+        results = []
+        for rs in products:
+            products_json = {}
+            products_json = rs.title
+            results.append(products_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
