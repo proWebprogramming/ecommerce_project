@@ -1,4 +1,5 @@
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 
 # Create your models here.
@@ -58,3 +59,17 @@ class ContactForm(ModelForm):
             'email': EmailInput(attrs={'class': 'input', 'placeholder': 'Email'}),
             'message': Textarea(attrs={'class': 'input', 'placeholder': 'Your message', 'rows':'5'}),
         }
+
+class FAQ(models.Model):
+    STATUS = (
+        ('True', 'Mavjud'),
+        ('False','Yopilgan'),
+    )
+    ordernumber = models.IntegerField()
+    question = models.CharField(max_length=250)
+    answer = RichTextUploadingField()
+    status = models.CharField(max_length=10, choices=STATUS, default='True')
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.question

@@ -1,0 +1,27 @@
+{% extends 'homebase.html' %}
+{% block title %}FAQ{{ setting.title }}{% endblock %}
+{% block keywords %} {{ setting.keywords }}{% endblock %}
+{% block description %} {{ setting.description }}{% endblock %}
+{% block sidebar %} {% include 'sidebar.html' %}{% endblock %}
+{% block body %}
+    <div class="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                    <li><a href="active">FAQ</a></li>
+            </ul>
+        </div>
+     </div>
+    <div id="section">
+         <div class="container">
+             <div class="row">
+                {% for rs in faq %}
+                <h3>{{ rs.question|safe }}</h3>
+                <br>
+                {{ rs.answer|safe }}
+                 {% endfor %}
+             </div>
+        </div>
+     </div>
+{% endblock %}
+{% block footer%} {% include 'footer.html' %}{% endblock %}
