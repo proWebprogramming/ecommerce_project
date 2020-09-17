@@ -1,10 +1,10 @@
 import json
-
 from django.contrib import messages
 from django.http import HttpResponseRedirect, request
 from django.http.response import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.template.loader import render_to_string
+from django.utils import translation
 
 from product.models import Category, Product, Images, Comment, Variants
 from .forms import SearchForm
@@ -42,14 +42,14 @@ def contactus(request):
             data.save()
             messages.success(request, 'Sizning xabaringiz qabul qilindi!Rahmat')
             return HttpResponseRedirect('/contact')
-    setting = Setting.objects.get(pk=1)
+    setting = Setting.objects.all()
     form = ContactForm
     context = {'setting': setting, 'form': form, }
     return render(request, 'contact.html', context)
 
 
 def aboutus(request):
-    setting = Setting.objects.get(pk=1)
+    setting = Setting.objects.all()
     context = {'setting':setting,}
     return render(request, 'about.html', context)
 
@@ -148,3 +148,12 @@ def ajaxcolor(request):
         data = {'rendered_table': render_to_string('color_list.html', context)}
         return JsonResponse(data)
     return JsonResponse(data)
+
+def selectlanguage(request):
+   if request.method == 'POST':
+        cur_language = translation.get_language()
+        lasturl = request.META.get('HTTP_REFERER')
+        lang = request.POST['language']
+        translation.activate(lang)
+        request.session[translation.LANGUAGE_SESSION_KEY]=lang
+        return HttpResponseRedirect('/' + lang)

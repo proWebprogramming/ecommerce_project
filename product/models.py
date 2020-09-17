@@ -47,6 +47,12 @@ class Product(models.Model):
         ('True', 'Mavjud'),
         ('False', 'Mavjud Emas'),
     )
+    VARIANTS = (
+        ('None','None'),
+        ('Color', 'Color'),
+        ('Size', 'Size'),
+        ('Size-Color', 'Size-Color'),
+    )
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, unique=True)
     keywords = models.CharField(max_length=255, unique=True)
@@ -56,6 +62,7 @@ class Product(models.Model):
     amount = models.IntegerField()
     minamount = models.IntegerField()
     detail = RichTextUploadingField()
+    variant = models.CharField(max_length=20, choices=VARIANTS, default='None')
     status = models.CharField(max_length=15, choices=STATUS)
     slug = models.SlugField(null=False, unique=True)
     create_at = models.DateTimeField(auto_now_add=True)
